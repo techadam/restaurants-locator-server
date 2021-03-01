@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const haversine = require('haversine')
 const Restaurant = require('../models/Restaurant');
 
 
@@ -34,6 +35,16 @@ router.post('/create', async(req, res) => {
         return res.json({error: err});
     }
 
+})
+
+router.post('/get-dist', async(req, res) => {
+    const {cord1, cord2} = req.body; //Get request params
+
+    var haversine_m = haversine(cord1, cord2); //Results in meters (default)
+    var haversine_km = haversine_m /1000; //Results in kilometers
+
+    console.log("distance (in meters): " + haversine_m + "m");
+    console.log("distance (in kilometers): " + haversine_km + "km");
 })
 
 module.exports = router;
