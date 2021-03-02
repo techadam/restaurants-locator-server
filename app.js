@@ -16,6 +16,7 @@ app.use(cors());
 
 
 //Routes
+app.use('/auth', require('./routes/auth'));
 app.use('/restaurant', require('./routes/restaurant'));
 
 app.listen(process.env.PORT || 5000, () => {

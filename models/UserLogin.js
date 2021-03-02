@@ -6,9 +6,9 @@ const userLoginSchema = new mongoose.Schema({
         required: true
     },
     logged_out: {
-        type: Date,
+        type: Boolean,
         required: true,
-        default: Date.now,
+        default: false,
     },
     logged_in_at: {
         type: Date,

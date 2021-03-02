@@ -2,8 +2,10 @@ const router = require('express').Router();
 const haversine = require('haversine')
 const Restaurant = require('../models/Restaurant');
 
+const authenticateToken = require('../middleware/authenticateToken');
 
-router.get('/', async(req, res) => {
+
+router.get('/', authenticateToken, async(req, res) => {
     try {
         const restaurants = await Restaurant.find({}); //Fetch all restaurants data
         res.json({data: restaurants});
