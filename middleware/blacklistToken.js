@@ -4,18 +4,17 @@ const Blacklist = require('../models/BlacklistToken');
 const UserLogin = require('../models/UserLogin');
 
 const blacklistToken = (req, res, next) => {
-  const authHeader = req.headers['authorization'];
- 
-  const bearer = authHeader && authHeader.split(' ')[0];
-  if (bearer != "Bearer")
-      return res.sendStatus(401);
-  
-  const token = authHeader && authHeader.split(' ')[1];
-  if (token == null)
-    return res.sendStatus(401);
+    const authHeader = req.headers['authorization'];
+    
+    const bearer = authHeader && authHeader.split(' ')[0];
+    if (bearer != "Bearer")
+        return res.sendStatus(401);
+    
+    const token = authHeader && authHeader.split(' ')[1];
+    if (token == null)
+        return res.sendStatus(401);
 
-
-  Blacklist.findOne({ where: {token: token } })
+    Blacklist.findOne({token: token })
     .then((found) => {
         if (found){
             
@@ -25,7 +24,7 @@ const blacklistToken = (req, res, next) => {
                 login.token_deleted=true;
                 await login.save();
             });
-            details={
+            details = {
                 "Status":"Failure",
                 "Details":'Token blacklisted. Cannot use this token.'
             }
@@ -39,15 +38,15 @@ const blacklistToken = (req, res, next) => {
                 
                 if(payload) {
                     const login = await UserLogin.findOne({user_id : payload.id, token_id: payload.token_id})
-                    if(login.token_deleted==true){
+                    if(login.token_deleted === true){
                         login.logged_out=true;
                         await login.save()
                         const blacklist_token = Blacklist.create({
                             token:token
                         });
                     }else{
-                        login.logged_out=true;
-                        login.token_deleted=true;
+                        login.logged_out = true;
+                        login.token_deleted = true;
                         await login.save();
                         const blacklist_token = Blacklist.create({
                             token:token
