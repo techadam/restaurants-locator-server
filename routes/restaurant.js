@@ -5,9 +5,9 @@ const Restaurant = require('../models/Restaurant');
 const authenticateToken = require('../middleware/authenticateToken');
 
 
-router.get('/', authenticateToken, async(req, res) => {
+router.get('', async(req, res) => {
     try {
-        const restaurants = await Restaurant.find({}); //Fetch all restaurants data
+        const restaurants = await Restaurant.find({}).sort({'updatedAt': -1}); //Fetch all restaurants data
         res.json({data: restaurants});
     }catch(err) {
         return res.status(500).json({error: err});

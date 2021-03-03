@@ -15,16 +15,16 @@ const createToken = async(req) => {
         req.socket.remoteAddress || 
         req.connection.socket.remoteAddress
 
-    const user_logins = await UserLogin.find({ user_id: req.auth.id ,token_deleted:false, ip_address:ip, device: req.headers["user-agent"]});
+    const user_logins = await UserLogin.find({ user_id: req.auth.id ,token_deleted: false, ip_address: ip, device: req.headers["user-agent"]});
 
     user_logins.forEach(async(login) => {
         if(login){
-            login.token_deleted=true;
+            login.token_deleted = true;
             await login.save()
         }      
     });
     
-    const token_secret=await customId({
+    const token_secret = await customId({
         token_secret : ip,
         date : Date.now(),
         randomLength: 8 

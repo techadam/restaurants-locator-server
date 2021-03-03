@@ -49,13 +49,16 @@ const blacklistToken = (req, res, next) => {
                         login.token_deleted = true;
                         await login.save();
                         const blacklist_token = Blacklist.create({
-                            token:token
+                            token: token
                         });
                     }
                 }
                 next();
             });
         }
+    })
+    .catch(error => {
+        console.log(error)
     });
 }
 
