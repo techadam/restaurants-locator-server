@@ -33,10 +33,6 @@ app.use('/auth', require('./routes/auth'));
 app.use('/restaurant', require('./routes/restaurant'));
 
 io.on("connection", (socket) => {
-    setInterval(() => {
-        socket.broadcast.emit("newdata", "Yayaya")
-    }, 5000)
-
     socket.on('create-restaurant', async(data, callback) => {
         const isSaved = await saveRestaurant(data)
         const saveStatus = (isSaved) ? true : false
