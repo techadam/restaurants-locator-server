@@ -34,7 +34,34 @@ router.post('/create', async(req, res) => {
        const newRes = await restaurant.save();
        res.json({data: newRes});
     }catch(err) {
-        return res.json({error: err});
+        return res.status(500).json({error: err});
+    }
+
+})
+
+router.post('/edit', async(req, res) => {
+    const {_id, name, lat, log, address} = req.body; //Get request params
+
+    if(!_id || !name || !lat || !log || !address) {
+        //Verify that params are not empty
+        return res.status(400).json({error: "All restaurant fields are required"});
+    }
+    
+    try {
+        //Save restaurant to DB
+       const rest = await Restaurant.findById(_id);
+       
+       rest.name = name;
+       rest.lat = lat;
+       rest.log = log;
+       rest.address = address;
+
+       //Save
+       rest.save();
+
+       res.status(201).json({data: rest});
+    }catch(err) {
+        return res.status(500).json({error: "Restaurant was not found. Please try again"});
     }
 
 })

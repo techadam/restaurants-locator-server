@@ -11,5 +11,14 @@ module.exports = {
         }catch(error) {
             return false;
         }
+    },
+    getRestaurant: async(id) => {
+        try {
+            //Save restaurant to DB
+           const rest = await Restaurant.findById(id);
+           return rest;
+        }catch(error) {
+            return false;
+        }
     }
 }

@@ -63,7 +63,7 @@ router.post('/register', async (req, res) => {
         //Get & Send saved user data
         res.status(201).json({id: savedUser._id})
     }catch(error) {
-        res.json({error: error})
+        res.status(500).json({error: error})
     }
 
 });

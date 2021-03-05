@@ -25,28 +25,48 @@ app.use(cors());
 
 
 //Helper functions
-const { saveRestaurant, getRestaurants } = require('./utils/db.utils');
+const { saveRestaurant, getRestaurant } = require('./utils/db.utils');
 
 
 //Routes
 app.use('/auth', require('./routes/auth'));
 app.use('/restaurant', require('./routes/restaurant'));
 
+//Socket IO
 io.on("connection", (socket) => {
     socket.on('create-restaurant', async(data, callback) => {
-        const isSaved = await saveRestaurant(data)
-        const saveStatus = (isSaved) ? true : false
-        
-        if(isSaved) {
-            io.sockets.emit('updatedRestaurants', isSaved)
-        }
+        const isSaved = await saveRestaurant(data);
+        const saveStatus = (isSaved) ? true : false;
         
         callback({
             status: saveStatus
-        })
+        });
     })
 });
 
 httpServer.listen(process.env.PORT || 5000, () => {
     console.log('Server is running on port 5000');
+});
+
+
+//Mongoose watch stream
+const connection = mongoose.connection;
+
+connection.once("open", () => {
+    console.log("Setting change stream");
+
+    const restaurantsChangeStream = connection.collection("restaurants").watch();
+
+    restaurantsChangeStream.on("change", async(change) => {
+        switch(change.operationType) {
+            case "insert": 
+                io.emit('updatedRestaurants', change.fullDocument);
+
+            case "update":
+                //get document by Id and send via socket.io
+                const isFound = await getRestaurant(change.documentKey);
+
+                io.emit('editedRestaurant', isFound);
+        };
+    });
 });
