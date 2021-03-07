@@ -55,18 +55,15 @@ const connection = mongoose.connection;
 connection.once("open", () => {
     console.log("Setting change stream");
 
-    const restaurantsChangeStream = connection.collection("restaurants").watch();
+    const restaurantsChangeStream = connection.collection("restaurants").watch({fullDocument: "updateLookup"});
 
-    restaurantsChangeStream.on("change", async(change) => {
+    restaurantsChangeStream.on("change", (change) => {
         switch(change.operationType) {
             case "insert": 
                 io.emit('updatedRestaurants', change.fullDocument);
 
             case "update":
-                //get document by Id and send via socket.io
-                const isFound = await getRestaurant(change.documentKey);
-
-                io.emit('editedRestaurant', isFound);
+                io.emit('editedRestaurant', change.fullDocument);
         };
     });
 });
