@@ -7,7 +7,7 @@ const cors = require('cors')
 const httpServer = require("http").createServer(app);
 const options = {
     cors: {
-        origin: "http://localhost:8080",
+        origin: "*",
         methods: ["GET", "POST"]
     }
 };
