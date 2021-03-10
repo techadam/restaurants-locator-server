@@ -18,6 +18,14 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    photo: {
+        type: String,
+        default: null
+    },
+    socialType: {
+        type: String,
+        default: 'normal'
+    }
 }, {
     timestamps: true
 });
